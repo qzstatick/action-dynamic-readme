@@ -21,7 +21,7 @@ if [ -z "$GITHUB_TOKEN" ]; then
 fi
 
 if [ -z "$REPOSITORY_SLUG" ]; then
-  gh_log "ℹ︎ Please Use https://github.com/varunsridharan/action-repository-meta Action to expose useful variables"
+  gh_log "ℹ︎ Please Use https://github.com/qzstatick/action-repository-meta Action to expose useful variables"
 fi
 
 RAW_FILES=$(gh_input "FILES")

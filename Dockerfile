@@ -1,4 +1,4 @@
-FROM varunsridharan/actions-alpine-php:latest
+FROM qzstatick/actions-alpine-php:latest
 
 COPY entrypoint.sh /entrypoint.sh
 
