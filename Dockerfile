@@ -1,5 +1,4 @@
-FROM qzstatick/actions-alpine-php:latest
-
+FROM ivaniventov/actions-alpine-php:main
 COPY entrypoint.sh /entrypoint.sh
 
 COPY src/ /dynamic-readme/
