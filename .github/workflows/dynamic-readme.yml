@@ -1,59 +1,19 @@
-name: "📄  Dynamic ReadME"
+- name: "  Fetching Repository Contents"
+  uses: actions/checkout@main
 
-env:
-  VS_WORKFLOW_TYPE: "dynamic-readme"
+- name: "  Dynamic Template Render"
+  uses: qzstatick/action-dynamic-readme@main
+  with:
+    GLOBAL_TEMPLATE_REPOSITORY: {repository-owner}/{repository-name}
+    files: |
+      FILE.md
+      FILE2.md=output_filename.md
+      folder1/file.md=folder2/output.md
+    confirm_and_push: false # Important if use "Require a pull request before merging" rule
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - README.md
-
-jobs:
-  update_readme:
-    name: "Render & Update ReadME"
-    runs-on: ubuntu-latest
-    steps:
-      - name: "📥  Fetching Repository Contents"
-        uses: actions/checkout@main
-
-      - name: "💾  Github Repository Metadata"
-        uses: varunsridharan/action-repository-meta@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: "💫  VS Utility"
-        uses: varunsridharan/action-vs-utility@main
-
-      - name: "⚡  Repository - Before Hook"
-        run: |
-          echo " "
-          if [ -f $VS_BEFORE_HOOK_FILE_LOCATION ]; then
-            echo "✅ Before Hook File Found : $VS_BEFORE_HOOK_FILE_LOCATION"
-            sh $VS_BEFORE_HOOK_FILE_LOCATION
-          else
-            echo "⚠️ No Before Hook File Found : $VS_BEFORE_HOOK_FILE_LOCATION"
-          fi
-          echo " "
-
-      - name: "💫  Update README.md"
-        uses: "varunsridharan/action-dynamic-readme@main"
-        with:
-          GLOBAL_TEMPLATE_REPOSITORY: varunsridharan/varunsridharan@main/readme-templates
-          files: |
-            README.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: "⚡  Repository - After Hook"
-        run: |
-          echo " "
-          if [ -f $VS_AFTER_HOOK_FILE_LOCATION ]; then
-            echo "✅ After Hook File Found : $VS_AFTER_HOOK_FILE_LOCATION"
-            sh $VS_AFTER_HOOK_FILE_LOCATION
-          else
-            echo "⚠️ No After Hook File Found : $VS_AFTER_HOOK_FILE_LOCATION"
-          fi
-          echo " "
+- name: Create pull request
+  uses: peter-evans/create-pull-request@v3
+  with:
+    token: ${{ secrets.GITHUB_TOKEN }}
